@@ -16,6 +16,8 @@ Concepts:
     score - function 0, 1, None
 """
 import itertools
+import re
+import random
 
 
 class Board:
@@ -27,7 +29,8 @@ class Board:
             state = tuple((self._EMPTY, ) * 3 for _ in range(3))
         self.state = state
         xs = sum(row.count('X') for row in state)
-        self.turn = 'X' if xs % 2 == 0 else 'O'
+        os = sum(row.count('O') for row in state)
+        self.turn = 'X' if xs == os else 'O'
 
     @property
     def squares(self):
@@ -68,18 +71,16 @@ class Board:
         #  extracts the left to right diagonal row from a state
         diagonal = lambda state: tuple(state[i][i] for i in range(len(state[0])))
 
-        transpose = lambda state: tuple(map(tuple, zip(*state)))
+        rotate = lambda state: tuple(map(tuple, zip(*reversed(state))))
 
-        for state in (self.state, transpose(self.state)):
-            for row in state + (diagonal(state),):  # add diagonal as a 4th row
+        for state in (self.state, rotate(self.state)):
+            for row in state + (diagonal(state), ):  # add diagonal as a 4th row
                 if run(row):
                     return row[0]
         if not list(self.empty_squares):
             return 'stalemate'
         else:
             return None
-
-
 
     def __getitem__(self, index):
         """allows normal double indexing and numpy style tuple indexing"""
@@ -112,3 +113,68 @@ class Board:
 
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.state)
+
+class Bot:
+    """min/max tic-tac-toe playing robot"""
+    cache = {}
+    def __init__(self):
+        pass
+
+    def util(self, board):
+        if board in self.cache:
+            return self.cache[board]
+        score = board.score()
+        if score is None:
+            if board.turn == 'X':
+                u = max(self.quality(move, board) for move in board.empty_squares)
+            else:
+                u = min(self.quality(move, board) for move in board.empty_squares)
+            self.cache[board] = u
+            return u
+        elif score == 'stalemate':
+            self.cache[board] = 0
+            return 0
+        elif score == 'X':
+            self.cache[board] = 1
+            return 1
+        else:
+            self.cache[board] = -1
+            return -1
+
+    def quality(self, action, board):
+        return self.util(board.board_from_move(action))
+
+    def __call__(self, board):
+        op = max if board.turn == 'X' else min
+        q = lambda action: self.quality(action, board)
+        best_case = op(q(s) for s in board.empty_squares)
+        moves = [cord for cord in board.empty_squares if q(cord) == best_case]
+        return random.choice(moves)
+
+
+
+
+def human_player(board):
+    print(board)
+    move = input("\nYou are {}, what is your move?: ".format(board.turn))
+    return tuple(int(x) for x in re.findall(r'\d', move))
+
+def random_player(board):
+    moves = list(board.empty_squares)
+    return random.choice(moves)
+
+
+def play(p1, p2, initial=None, verbose=False):
+    """plays a game of tic-tac-toe using 2 strategy functions"""
+    other = {p1:p2, p2:p1}
+    board = Board() if not initial else initial
+    current_player = p1
+    while board.score() is None:
+        try:
+            board = board.board_from_move(current_player(board))
+            current_player = other[current_player]
+        except ValueError:
+            return 'X' if board.turn == 'O' else 'O'
+        if verbose:
+            print(board)
+    return board.score()

@@ -4,6 +4,7 @@ import tic_tac_toe_bot as bot
 example_state = (('X', 'O', 'X'), ('X', '.', 'O'), ('X', 'O', '.'), )
 o_win = (('O', 'O', 'O'), ('X', '.', 'X'), ('X', '.', '.'), )
 diag_win = (('X', 'O', 'O'), ('O', 'X', '.'), ('.', '.', 'X'), )
+l_diag_win = (('.', 'O', 'X'), ('.', 'X', 'O'), ('X', '.', 'O'), )
 stalemate = (('X', 'O', 'X'), ('X', 'O', 'X'), ('O', 'X', 'O'), )
 
 
@@ -66,11 +67,13 @@ def test_board_from_move():
     assert new_board[2, 1] == 'X'
     new_board = new_board.board_from_move((1, 1))
     assert new_board[1, 1] == 'O'
+    assert new_board.turn == 'X'
     assert board[1, 1] == board._EMPTY
     assert new_board is not board
     with pytest.raises(ValueError):
         n = new_board.board_from_move((1, 1))
     assert len(list(new_board.squares)) == 9
+
 
 def test_board_score():
     assert bot.Board().score() == None
@@ -78,6 +81,7 @@ def test_board_score():
     assert bot.Board(o_win).score() == "O"
     assert bot.Board(diag_win).score() == "X"
     assert bot.Board(stalemate).score() == "stalemate"
+    assert bot.Board(l_diag_win).score() == 'X'
 
 
 def test_board_hash():
@@ -114,6 +118,10 @@ def test_bot_repr():
     # regression only
     board = bot.Board(example_state)
     assert repr(board) == "Board((('X', 'O', 'X'), ('X', '.', 'O'), ('X', 'O', '.')))"
+
+
+def test_bot():
+    robot = bot.Bot()
 
 
 if __name__ == '__main__':
