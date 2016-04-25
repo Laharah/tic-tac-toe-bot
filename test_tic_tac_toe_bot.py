@@ -66,5 +66,18 @@ def test_board_filled_squares():
     assert not any(board[cord] == board._EMPTY for cord in filled_squares)
 
 
+def test_board_from_move():
+    board = bot.Board()
+    new_board = board.board_from_move((2, 1))
+    assert new_board[2, 1] == 'X'
+    new_board = new_board.board_from_move((1, 1))
+    assert new_board[1, 1] == 'O'
+    assert board[1, 1] == board._EMPTY
+    assert new_board is not board
+    with pytest.raises(ValueError):
+        n = new_board.board_from_move((1, 1))
+    assert len(list(new_board.squares)) == 9
+
+
 if __name__ == '__main__':
     pytest.main('-v -s')

@@ -48,6 +48,18 @@ class Board:
                 for i, row in enumerate(self) for j, value in enumerate(row)
                 if value != self._EMPTY)
 
+    def board_from_move(self, cord):
+        if self[cord] != self._EMPTY:
+            raise ValueError("Square {} already Taken!".format(cord))
+        mark = 'X' if self.turn == 0 else 'O'
+        new_state = []
+        r, c = cord
+        for i, row in enumerate(self):
+            if i == r:
+                row = row[:c] + (mark, ) + row[c + 1:]
+            new_state.append(row)
+        return self.__class__(tuple(new_state))
+
     def __getitem__(self, index):
         if isinstance(index, tuple):
             a, b = index
