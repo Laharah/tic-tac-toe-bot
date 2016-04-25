@@ -79,5 +79,21 @@ def test_board_from_move():
     assert len(list(new_board.squares)) == 9
 
 
+def test_board_str():
+    # regression only
+    board = bot.Board(example_state)
+    s = ('  0   1   2',
+         '0 X | O | X',
+         '  ---------',
+         '1 X |   | O',
+         '  ---------',
+         '2 X | O |  \n', )
+    assert str(board) == '\n'.join(s)
+
+def test_bot_repr():
+    board = bot.Board(example_state)
+    assert repr(board) == "Board((('X', 'O', 'X'), ('X', '.', 'O'), ('X', 'O', '.')))"
+
+
 if __name__ == '__main__':
     pytest.main('-v -s')

@@ -73,3 +73,17 @@ class Board:
     def __iter__(self):
         """iterates by row"""
         return iter(self.state)
+
+    def __str__(self):
+        head = "  0   1   2\n"
+        sep =   '  ---------\n'
+        r = '{} {} | {} | {}\n'
+        rows = []
+        for i, row in enumerate(self):
+            row = (v if v != self._EMPTY else ' ' for v in row)
+            rows.append(r.format(i, *row))
+        rows = sep.join(rows)
+        return ''.join((head, rows))
+
+    def __repr__(self):
+        return '{}({})'.format(self.__class__.__name__, self.state)
