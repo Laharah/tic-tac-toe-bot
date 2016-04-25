@@ -38,5 +38,33 @@ def test_board_iter():
         assert row_board == row_example
 
 
+def test_board_empty_squares():
+    board = bot.Board(example_state)
+    assert list(board.empty_squares) == [(1, 1), (2, 2)]
+    assert all(board[cord] == board._EMPTY for cord in board.empty_squares)
+    cords = {(a, b) for a in range(3) for b in range(3)}
+    non_empty = cords - set(board.empty_squares)
+    assert not any(board[cord] == board._EMPTY for cord in non_empty)
+
+
+def test_board_squares():
+    board = bot.Board()
+    squares = list(board.squares)
+    for square in squares:
+        assert square == board._EMPTY
+    assert len(squares) == 9
+
+
+def test_board_filled_squares():
+    board = bot.Board()
+    assert len(list(board.filled_squares)) == 0
+    board = bot.Board(example_state)
+    filled_squares = set(board.filled_squares)
+    all_cords = {(a, b) for a in range(3) for b in range(3)}
+    assert filled_squares == all_cords - set(board.empty_squares)
+    assert len(filled_squares) == 7
+    assert not any(board[cord] == board._EMPTY for cord in filled_squares)
+
+
 if __name__ == '__main__':
     pytest.main('-v -s')

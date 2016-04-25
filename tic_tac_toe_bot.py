@@ -29,6 +29,25 @@ class Board:
         xs = sum(row.count('X') for row in state)
         self.turn = xs % 2
 
+    @property
+    def squares(self):
+        """returns a generator of the values of all squares"""
+        return itertools.chain(*self.state)
+
+    @property
+    def empty_squares(self):
+        """attrubute that generates the cordinates of empty squares in the board"""
+        return ((i, j)
+                for i, row in enumerate(self) for j, value in enumerate(row)
+                if value == self._EMPTY)
+
+    @property
+    def filled_squares(self):
+        """attrubute that generates the cordinates of filled squares in the board"""
+        return ((i, j)
+                for i, row in enumerate(self) for j, value in enumerate(row)
+                if value != self._EMPTY)
+
     def __getitem__(self, index):
         if isinstance(index, tuple):
             a, b = index
