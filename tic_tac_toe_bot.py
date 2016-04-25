@@ -69,6 +69,12 @@ class Board:
         else:
             return self.state[index]
 
+    def __hash__(self):
+        return hash(self.state)
+
+    def __eq__(self, other):
+        return self.state == other.state
+
     def __iter__(self):
         """iterates by row"""
         return iter(self.state)

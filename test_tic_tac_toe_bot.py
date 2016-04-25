@@ -70,6 +70,24 @@ def test_board_from_move():
     assert len(list(new_board.squares)) == 9
 
 
+def test_board_hash():
+    board_a = bot.Board(example_state)
+    board_b = bot.Board(example_state)
+    assert board_a is not board_b
+    s = {board_a, board_b}  # must be hashable to be added to a set
+    assert hash(board_a) == hash(board_b)
+
+
+def test_board_eq():
+    a = bot.Board(example_state)
+    b = bot.Board(example_state)
+    c = bot.Board()
+    assert a == b != c
+    s = {a, b, c}
+    assert len(s) == 2
+    assert all(x in s for x in (a, b, c))
+
+
 def test_board_str():
     # regression only
     board = bot.Board(example_state)
