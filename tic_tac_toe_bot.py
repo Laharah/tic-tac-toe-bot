@@ -27,7 +27,7 @@ class Board:
             state = tuple((self._EMPTY, ) * 3 for _ in range(3))
         self.state = state
         xs = sum(row.count('X') for row in state)
-        self.turn = xs % 2
+        self.turn = 'X' if xs % 2 == 0 else 'O'
 
     @property
     def squares(self):
@@ -52,7 +52,7 @@ class Board:
         """creates and returns a new board with the given square taken"""
         if self[cord] != self._EMPTY:
             raise ValueError("Square {} already Taken!".format(cord))
-        mark = 'X' if self.turn == 0 else 'O'
+        mark = self.turn
         new_state = []
         r, c = cord
         for i, row in enumerate(self):
@@ -60,6 +60,26 @@ class Board:
                 row = row[:c] + (mark, ) + row[c + 1:]
             new_state.append(row)
         return self.__class__(tuple(new_state))
+
+    def score(self):
+        """return O, X, stalemate or None"""
+        #  checks if a row is a run
+        run = lambda row: row[0] != self._EMPTY and all(x == row[0] for x in row)
+        #  extracts the left to right diagonal row from a state
+        diagonal = lambda state: tuple(state[i][i] for i in range(len(state[0])))
+
+        transpose = lambda state: tuple(map(tuple, zip(*state)))
+
+        for state in (self.state, transpose(self.state)):
+            for row in state + (diagonal(state),):  # add diagonal as a 4th row
+                if run(row):
+                    return row[0]
+        if not list(self.empty_squares):
+            return 'stalemate'
+        else:
+            return None
+
+
 
     def __getitem__(self, index):
         """allows normal double indexing and numpy style tuple indexing"""

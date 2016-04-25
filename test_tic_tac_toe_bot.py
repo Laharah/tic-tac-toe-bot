@@ -2,6 +2,9 @@ import pytest
 import tic_tac_toe_bot as bot
 
 example_state = (('X', 'O', 'X'), ('X', '.', 'O'), ('X', 'O', '.'), )
+o_win = (('O', 'O', 'O'), ('X', '.', 'X'), ('X', '.', '.'), )
+diag_win = (('X', 'O', 'O'), ('O', 'X', '.'), ('.', '.', 'X'), )
+stalemate = (('X', 'O', 'X'), ('X', 'O', 'X'), ('O', 'X', 'O'), )
 
 
 def test_board():
@@ -68,6 +71,13 @@ def test_board_from_move():
     with pytest.raises(ValueError):
         n = new_board.board_from_move((1, 1))
     assert len(list(new_board.squares)) == 9
+
+def test_board_score():
+    assert bot.Board().score() == None
+    assert bot.Board(example_state).score() == "X"
+    assert bot.Board(o_win).score() == "O"
+    assert bot.Board(diag_win).score() == "X"
+    assert bot.Board(stalemate).score() == "stalemate"
 
 
 def test_board_hash():
