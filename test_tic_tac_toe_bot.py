@@ -1,16 +1,12 @@
 import pytest
 import tic_tac_toe_bot as bot
 
-example_state = (
-    ('X', 'O', 'X'),
-    ('X', '.', 'O'),
-    ('X', 'O', '.'),
-)
+example_state = (('X', 'O', 'X'), ('X', '.', 'O'), ('X', 'O', '.'), )
 
 
 def test_board():
     board = bot.Board()
-    assert board.state == tuple(('.') * 3 for _ in range(3))
+    assert board.state == tuple(('.', ) * 3 for _ in range(3))
     new_state = example_state
     board = bot.Board(new_state)
     assert board.state == new_state
@@ -36,5 +32,11 @@ def test_board_contains():
     assert 'X' in board
 
 
+def test_board_iter():
+    board = bot.Board(example_state)
+    for row_board, row_example in zip(board, example_state):
+        assert row_board == row_example
+
+
 if __name__ == '__main__':
-    pytest.main('-v')
+    pytest.main('-v -s')
