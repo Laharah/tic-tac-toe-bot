@@ -49,6 +49,7 @@ class Board:
                 if value != self._EMPTY)
 
     def board_from_move(self, cord):
+        """creates and returns a new board with the given square taken"""
         if self[cord] != self._EMPTY:
             raise ValueError("Square {} already Taken!".format(cord))
         mark = 'X' if self.turn == 0 else 'O'
@@ -61,14 +62,12 @@ class Board:
         return self.__class__(tuple(new_state))
 
     def __getitem__(self, index):
+        """allows normal double indexing and numpy style tuple indexing"""
         if isinstance(index, tuple):
             a, b = index
             return self.state[a][b]
         else:
             return self.state[index]
-
-    def __contains__(self, item):
-        return item in itertools.chain(*self.state)
 
     def __iter__(self):
         """iterates by row"""
@@ -76,8 +75,8 @@ class Board:
 
     def __str__(self):
         head = "  0   1   2\n"
-        sep =   '  ---------\n'
-        r = '{} {} | {} | {}\n'
+        sep = '\n  ---------\n'
+        r = '{} {} | {} | {}'
         rows = []
         for i, row in enumerate(self):
             row = (v if v != self._EMPTY else ' ' for v in row)

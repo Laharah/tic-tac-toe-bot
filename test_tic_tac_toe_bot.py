@@ -23,15 +23,6 @@ def test_board_get_item():
         board[0, 4]
 
 
-def test_board_contains():
-    board = bot.Board()
-    assert '.' in board
-    assert 'X' not in board
-    board = bot.Board(example_state)
-    assert 'O' in board
-    assert 'X' in board
-
-
 def test_board_iter():
     board = bot.Board(example_state)
     for row_board, row_example in zip(board, example_state):
@@ -87,10 +78,12 @@ def test_board_str():
          '  ---------',
          '1 X |   | O',
          '  ---------',
-         '2 X | O |  \n', )
+         '2 X | O |  ', )
     assert str(board) == '\n'.join(s)
 
+
 def test_bot_repr():
+    # regression only
     board = bot.Board(example_state)
     assert repr(board) == "Board((('X', 'O', 'X'), ('X', '.', 'O'), ('X', 'O', '.')))"
 
