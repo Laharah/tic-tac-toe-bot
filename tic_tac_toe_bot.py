@@ -41,13 +41,18 @@ class Board:
         if self[cord] != self._EMPTY:
             raise ValueError("Square {} already Taken!".format(cord))
         mark = self.turn
+        new_state = self._state_replace(cord, mark)
+        return self.__class__(tuple(new_state))
+
+    def _state_replace(self, cord, value):
+        """returns new state with value at cord"""
         new_state = []
         r, c = cord
         for i, row in enumerate(self):
             if i == r:
-                row = row[:c] + (mark, ) + row[c + 1:]
+                row = row[:c] + (value, ) + row[c + 1:]
             new_state.append(row)
-        return self.__class__(tuple(new_state))
+        return tuple(new_state)
 
     def score(self):
         """return O, X, stalemate or None"""
@@ -74,6 +79,16 @@ class Board:
             return self.state[a][b]
         else:
             return self.state[index]
+
+    def __setitem__(self, index, value):
+        """ONLY WORKS FOR TUPLE STYLE CORDINATES"""
+        try:
+            current_val = self[index]
+        except IndexError:
+            raise IndexError("index out of bounds")
+        if value == current_val:
+            return
+        self.state = self._state_replace(index, value)
 
     def __hash__(self):
         return hash(self.state)

@@ -27,6 +27,18 @@ def test_board_get_item():
         board[0, 4]
 
 
+def test_board_set_item():
+    board = bot.Board()
+    board[0, 0] = 'X'
+    assert board[0, 0] == 'X'
+    board[0, 0] = 'O'
+    assert board[0][0] == 'O'
+    with pytest.raises(IndexError):
+        board[0, 5] = 'X'
+    with pytest.raises(TypeError):
+        board[1][1] = 'X'
+
+
 def test_board_iter():
     board = bot.Board(example_state)
     for row_board, row_example in zip(board, example_state):
@@ -129,7 +141,7 @@ def test_bot_util():
     assert robot.util(bot.Board(example_state)) == 1
     assert robot.util(bot.Board(o_win)) == -1
     assert robot.util(bot.Board(stalemate)) == 0
-    assert robot.util(bot.Board()) == 0  # the only way to win is not to play.
+    assert robot.util(bot.Board()) == 0  # the only winning move is not to play.
     board = bot.Board().board_from_move((0, 0)).board_from_move((0, 2))
     assert robot.util(board) == 1
 
