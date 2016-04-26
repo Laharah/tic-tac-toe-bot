@@ -1,6 +1,5 @@
 # usr/bin/python
 
-import itertools
 import re
 import random
 
@@ -18,23 +17,11 @@ class Board:
         self.turn = 'X' if xs == os else 'O'
 
     @property
-    def squares(self):
-        """returns a generator of the values of all squares"""
-        return itertools.chain(*self.state)
-
-    @property
     def empty_squares(self):
         """attrubute that generates the cordinates of empty squares in the board"""
         return ((i, j)
                 for i, row in enumerate(self) for j, value in enumerate(row)
                 if value == self._EMPTY)
-
-    @property
-    def filled_squares(self):
-        """attrubute that generates the cordinates of filled squares in the board"""
-        return ((i, j)
-                for i, row in enumerate(self) for j, value in enumerate(row)
-                if value != self._EMPTY)
 
     def board_from_move(self, cord):
         """creates and returns a new board with the given square taken"""
@@ -81,7 +68,10 @@ class Board:
             return self.state[index]
 
     def __setitem__(self, index, value):
-        """ONLY WORKS FOR TUPLE STYLE CORDINATES"""
+        """
+        ONLY WORKS FOR TUPLE STYLE CORDINATES. FOR QUICK EDITS ONLY, PREFER
+        'Board.board_from_move' TO MAINTAIN IMMUTABILITY
+        """
         try:
             current_val = self[index]
         except IndexError:

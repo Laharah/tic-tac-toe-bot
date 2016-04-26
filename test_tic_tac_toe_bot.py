@@ -54,25 +54,6 @@ def test_board_empty_squares():
     assert not any(board[cord] == board._EMPTY for cord in non_empty)
 
 
-def test_board_squares():
-    board = bot.Board()
-    squares = list(board.squares)
-    for square in squares:
-        assert square == board._EMPTY
-    assert len(squares) == 9
-
-
-def test_board_filled_squares():
-    board = bot.Board()
-    assert len(list(board.filled_squares)) == 0
-    board = bot.Board(example_state)
-    filled_squares = set(board.filled_squares)
-    all_cords = {(a, b) for a in range(3) for b in range(3)}
-    assert filled_squares == all_cords - set(board.empty_squares)
-    assert len(filled_squares) == 7
-    assert not any(board[cord] == board._EMPTY for cord in filled_squares)
-
-
 def test_board_from_move():
     board = bot.Board()
     new_board = board.board_from_move((2, 1))
@@ -84,7 +65,6 @@ def test_board_from_move():
     assert new_board is not board
     with pytest.raises(ValueError):
         n = new_board.board_from_move((1, 1))
-    assert len(list(new_board.squares)) == 9
 
 
 def test_board_score():
