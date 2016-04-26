@@ -124,5 +124,31 @@ def test_bot():
     robot = bot.Bot()
 
 
+def test_bot_util():
+    robot = bot.Bot()
+    assert robot.util(bot.Board(example_state)) == 1
+    assert robot.util(bot.Board(o_win)) == -1
+    assert robot.util(bot.Board(stalemate)) == 0
+    assert robot.util(bot.Board()) == 0  # the only way to win is not to play.
+    board = bot.Board().board_from_move((0, 0)).board_from_move((0, 2))
+    assert robot.util(board) == 1
+
+
+def test_bot_quality():
+    robot = bot.Bot()
+    board = bot.Board().board_from_move((0, 0)).board_from_move((0, 2))
+    assert robot.quality((1, 1), board) == 0
+    assert robot.quality((0, 1), board) == -1
+    assert robot.quality((1, 0), board) == 1
+
+
+def test_bot_call():
+    robot = bot.Bot()
+    board = bot.Board()
+    assert isinstance(robot(board), tuple)
+    board = board.board_from_move(robot(board))
+    assert isinstance(robot(board), tuple)
+
+
 if __name__ == '__main__':
     pytest.main('-v -s')

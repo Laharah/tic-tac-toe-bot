@@ -1,20 +1,5 @@
 # usr/bin/python
-"""A perfect tic tac toe player. written in python"""
-"""
-  0   1   2
-0 X | O | X
-  ---------
-1 O | X | X
-  ---------
-2 X | O | O
-"""
-"""
-Concepts:
-    board (state) - custom class: indexing, printing, turn, filled, HASHABLE and IMMUTABLE
-    player - functon, bot with strat, human with input
-    who's turn - stored in board? integer
-    score - function 0, 1, None
-"""
+
 import itertools
 import re
 import random
@@ -114,9 +99,11 @@ class Board:
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.state)
 
+
 class Bot:
     """min/max tic-tac-toe playing robot"""
     cache = {}
+
     def __init__(self):
         pass
 
@@ -152,12 +139,11 @@ class Bot:
         return random.choice(moves)
 
 
-
-
 def human_player(board):
     print(board)
     move = input("\nYou are {}, what is your move?: ".format(board.turn))
     return tuple(int(x) for x in re.findall(r'\d', move))
+
 
 def random_player(board):
     moves = list(board.empty_squares)
@@ -166,7 +152,7 @@ def random_player(board):
 
 def play(p1, p2, initial=None, verbose=False):
     """plays a game of tic-tac-toe using 2 strategy functions"""
-    other = {p1:p2, p2:p1}
+    other = {p1: p2, p2: p1}
     board = Board() if not initial else initial
     current_player = p1
     while board.score() is None:
