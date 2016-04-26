@@ -1,9 +1,14 @@
 # usr/bin/python
+from __future__ import print_function, division, unicode_literals
+
 
 import re
 import random
 import warnings
+import sys
 
+if sys.version_info.major < 3:
+    input = raw_input
 
 class Board:
     """tracks the game state of tic-tac-toe, has convienience functions"""
