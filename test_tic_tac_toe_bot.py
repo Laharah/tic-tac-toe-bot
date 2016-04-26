@@ -63,7 +63,7 @@ def test_board_from_move():
     assert new_board.turn == 'X'
     assert board[1, 1] == board._EMPTY
     assert new_board is not board
-    with pytest.raises(ValueError):
+    with pytest.raises(IndexError):
         n = new_board.board_from_move((1, 1))
 
 

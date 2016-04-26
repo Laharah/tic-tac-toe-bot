@@ -2,6 +2,7 @@
 
 import re
 import random
+import warnings
 
 
 class Board:
@@ -26,7 +27,7 @@ class Board:
     def board_from_move(self, cord):
         """creates and returns a new board with the given square taken"""
         if self[cord] != self._EMPTY:
-            raise ValueError("Square {} already Taken!".format(cord))
+            raise IndexError("Square {} already Taken!".format(cord))
         mark = self.turn
         new_state = self._state_replace(cord, mark)
         return self.__class__(tuple(new_state))
@@ -146,7 +147,7 @@ class Bot:
 
 def human_player(board):
     print(board)
-    move = input("\nYou are {}, what is your move?: ".format(board.turn))
+    move = input("\nYou are {}s, what is your move?: ".format(board.turn))
     return tuple(int(x) for x in re.findall(r'\d', move))
 
 
@@ -164,8 +165,22 @@ def play(p1, p2, initial=None, verbose=False):
         try:
             board = board.board_from_move(current_player(board))
             current_player = other[current_player]
-        except ValueError:
+        except IndexError:
+            warnings.warn('ILLEGAL MOVE, AUTOMATIC LOSS!')
             return 'X' if board.turn == 'O' else 'O'
         if verbose:
             print(board)
     return board.score()
+
+if __name__ == '__main__':
+    winner_table = ['X', 'O', 'stalemate']
+    players = [Bot(), human_player]
+    while True:
+        random.shuffle(players)
+        winner = play(*players)
+        if winner_table.index(winner) == 2:
+            print("\nStalemate, no winner!\n")
+        elif players[winner_table.index(winner)] is human_player:
+            print("\nYou Win! This should be impossible!\n")
+        else:
+            print("\nYou lose, better luck next time!\n")
