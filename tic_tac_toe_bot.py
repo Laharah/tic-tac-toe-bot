@@ -152,7 +152,7 @@ class Bot:
 
 def human_player(board):
     print(board)
-    move = input("\nYou are {}s, what is your move?: ".format(board.turn))
+    move = input("\nYou are {}s, what is your move? (row, col): ".format(board.turn))
     return tuple(int(x) for x in re.findall(r'\d', move))
 
 
